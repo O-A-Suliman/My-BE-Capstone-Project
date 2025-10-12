@@ -10,9 +10,17 @@ class Review(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='reviews')
     created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name='liked_reviews', blank=True)
+
 
     class Meta:
         ordering = ['created_at']
 
     def __str__(self):
         return f"{self.movie_title} - {self.rating} stars by {self.user.username}"
+
+class Comment(models.Model):
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

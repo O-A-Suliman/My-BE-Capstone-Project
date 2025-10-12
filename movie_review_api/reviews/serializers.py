@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Review
+from .models import Review, Comment
 from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
@@ -23,7 +23,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'movie_title', 'content', 'rating', 'user', 'created_at']
+        fields = ['id', 'movie_title', 'content', 'rating', 'user', 'created_at', 'likes_count', 'comments']
 
     def validate_rating(self, value):
         if value < 1 or value > 5:
@@ -34,3 +34,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         if not value.strip():
             raise serializers.ValidationError("Movie title cannot be empty")
         return value
+
+class CommentSerializer(serializers.ModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Comment
+        fields = ['id', 'review', 'user', 'text', 'created_at']
