@@ -5,6 +5,12 @@ from .serializers import ReviewSerializer, UserSerializer ,CommentSerializer
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
 
+from django.shortcuts import render
+
+def home(request):
+    return render(request, 'home.html')
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

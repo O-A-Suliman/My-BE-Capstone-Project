@@ -20,10 +20,19 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    likes_count = serializers.SerializerMethodField()
+    comments = serializers.SerializerMethodField()
 
     class Meta:
         model = Review
         fields = ['id', 'movie_title', 'content', 'rating', 'user', 'created_at', 'likes_count', 'comments']
+
+
+    def get_likes_count(self, obj):
+        return obj.likes.count()
+
+    def get_comments(self, obj):
+        return CommentSerializer(obj.comments.all(), many=True).data
 
     def validate_rating(self, value):
         if value < 1 or value > 5:
